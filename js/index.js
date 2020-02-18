@@ -1,40 +1,57 @@
 "use strict";
 
- const form = document.forms.options;
- let timerId;
- const obj ={};
+const form = document.forms.options;
 
-const start = document.getElementsByName('start')[0];
-start.addEventListener("click", newGameStart);
+let mediator = {
+    finish: finish.end,
+    heroMove: game.heroMove,
+
+    newGameOptions: function (){
+        if (mediator.table){
+            for (let i = 0; i<mediator.timerId.length; i++){
+            clearInterval(mediator.timerId[i])
+            }
+        
+            mediator.table.remove();
+            form.hidden = false;
+            game.newGame();
+        }
+    },            
+    newGameStart: function (){
+
+        let xField = form.elements.x.value;
+        mediator.x = fieldCheck(xField);
+        if (!mediator.x) return;
+        let yField = form.elements.y.value;
+        mediator.y = fieldCheck(yField);
+        if (!mediator.y) return;
+    
+        mediator.table = fieldCreate.tableCreate(mediator.x, mediator.y);
+        mediator.hero = fieldCreate.heroCreate(0, 0);
+        mediator.monster = fieldCreate.monsterCreate;
+        mediator.finish = finish.end;
+    
+        mediator.timerId = game.start(mediator.x, mediator.y, mediator.monster);
+    
+        form.hidden = true; 
+    }  
+}
+
+ const start = document.getElementsByName('start')[0];
+ start.addEventListener("click", mediator.newGameStart);
 
  document.addEventListener('keydown', function(event) {
     if (!form.hidden && event.code == 'Enter') {
-        newGameStart();
+        mediator.newGameStart();
     }
  }); 
 
-function newGameStart(){
+ document.addEventListener('keydown', mediator.heroMove);
 
-    let xField = form.elements.x.value;
-  obj.x =fieldCheck(xField);
-    if (!obj.x) return;
-    let yField = form.elements.y.value;
-  obj.y = fieldCheck(yField);
-    if (!obj.y) return;
+ const newGame = document.getElementById('newGame');
+ newGame.addEventListener("click", mediator.newGameOptions);
 
-  obj.table = fieldCreate.tableCreate(obj.x, obj.y);
-  obj.hero = fieldCreate.heroCreate(0, 0);
-  obj.monster = fieldCreate.monsterCreate;
-  obj.finish = finish.end;
-
-  timerId = game.start();
-
- form.hidden = true; 
-}
-
-document.addEventListener('keydown', game.heroMove);
-
-let fieldCheck = function (field){
+ let fieldCheck = function (field){
     if (field<3){
         alert("Поле слишком маленькое");
         return false;
@@ -44,31 +61,9 @@ let fieldCheck = function (field){
     return field;
  };
 
- const newGame = document.getElementById('newGame');
- newGame.addEventListener("click", newGameOptions);
+ 
 
- function newGameOptions(){
-     if (obj.table){
-         for (let i = 0; i<timerId.length; i++){
-         clearInterval(timerId[i])
-         }
-     
-         obj.table.remove();
-         form.hidden = false;
-         game.newGame();
-     }
- }            
-
- function random(min, max) {
-     let rand = Math.round(min - 0.5 + Math.random() * (max - min + 1));
-     if (rand%2 == 0) { return rand
-     }else return random(min, max);
- }
-
- function randomInteger(min, max) {
-    let rand = min - 0.5 + Math.random() * (max - min + 1);
-    return Math.round(rand);
- }
+ 
 
 
 

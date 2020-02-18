@@ -27,17 +27,17 @@ let fieldCreate = (function(){
 
    tableCreate: tableCreate,
 
-      monsterCreate: function(yMonster, xMonster){
+      monsterCreate: function(yMonster, xMonster, table){
          let monster = document.createElement('div');
          monster.innerHTML = '<img src="styles/images/monster.PNG" alt="Monster" >';
-         obj.table.rows[yMonster].cells[xMonster].append(monster);
+         mediator.table.rows[yMonster].cells[xMonster].append(monster);
            return monster;
       },
        
-      heroCreate: function (yHero,xHero){
+      heroCreate: function (yHero, xHero, table){
          let hero = document.createElement('div');
          hero.innerHTML = '<img src="styles/images/hero.PNG" alt="Hero" >';
-         obj.table.rows[yHero].cells[xHero].append(hero);
+         mediator.table.rows[yHero].cells[xHero].append(hero);
         return hero;
       }
    }
@@ -47,7 +47,7 @@ let fieldCreate = (function(){
 let finish = (function(){
 
 let finishGame = function (yHero, xHero, dangerY, dangerX ){
-    if (xHero == obj.x-1 && yHero == obj.y-1){
+    if (xHero ==  mediator.x-1 && yHero ==  mediator.y-1){
         showCover('Victory!!! Play again?')
     }
      let dY = dangerY.indexOf(yHero);
@@ -65,10 +65,10 @@ let showCover = function (conf) {
     let answer = confirm(conf);
     if (answer){
         hideCover();
-        newGameOptions();
+        mediator.newGameOptions();
     }else{
      hideCover();
-     newGameOptions();
+     mediator.newGameOptions();
     }
   };
 //===================================================

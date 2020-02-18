@@ -9,9 +9,9 @@ let game = (function(){
     let timerId = [];
 
     function checkXY(xAny,yAny,arrow){
-            if (arrow == 'ArrowUp'&&yAny==0||arrow == 'ArrowDown'&&yAny==obj.y-1) {
+            if (arrow == 'ArrowUp'&&yAny==0||arrow == 'ArrowDown'&&yAny==mediator.y-1) {
                return false;}
-            if (arrow == 'ArrowLeft'&&xAny==0||arrow == 'ArrowRight'&&xAny==obj.x-1) {
+            if (arrow == 'ArrowLeft'&&xAny==0||arrow == 'ArrowRight'&&xAny==mediator.x-1) {
                return false;}
             if (arrow == 'ArrowUp'&&xAny%2!=0||arrow == 'ArrowDown'&&xAny%2!=0) {
                return false;}
@@ -31,7 +31,7 @@ let game = (function(){
             this.monster= monster(yMonster, xMonster);
                     
             }
-            moveMonster (i, finish){
+            moveMonster (i){
                   let rd = randomInteger(1, 4);
                   let arrowM;
                   if (rd==1) arrowM ='ArrowUp';
@@ -45,7 +45,7 @@ let game = (function(){
                      dangerX[i] =this.xMonster;
                      dangerY[i] =this.yMonster;
             
-                    finish(yHero, xHero, dangerY, dangerX);
+                     mediator.finish(yHero, xHero, dangerY, dangerX);
                   }  
             }
       }
@@ -59,18 +59,18 @@ let game = (function(){
 
       function hero(arrowH){
          if (checkXY(xHero, yHero, arrowH)){
-         ([xHero, yHero] = step (xHero, yHero, arrowH,obj.hero));
-          obj.finish(yHero, xHero, dangerY, dangerX);
+         ([xHero, yHero] = step (xHero, yHero, arrowH, mediator.hero));
+         mediator.finish(yHero, xHero, dangerY, dangerX);
          }
       }
 
-      function start(){
+      function start(x, y, monster){
          let countMonster = form.elements.monster.value;
           
          for (let i = 0; i<countMonster; i++){   
-               let m = new Monster(obj.x,obj.y, obj.monster);
+               let m = new Monster(x, y, monster);
                let moveMonster = m.moveMonster.bind(m);
-               let timerIdNew = setInterval(moveMonster, 500, i, obj.finish);
+               let timerIdNew = setInterval(moveMonster, 500, i);
                timerId[i] = timerIdNew;
          } 
                
@@ -91,29 +91,39 @@ let game = (function(){
    }
 })();
 
-    function step(xAny,yAny,arrow,who)  { 
+    function step(xAny, yAny, arrow, who)  { 
         if (arrow == 'ArrowUp'){
-            obj.table.rows[yAny].cells[xAny].innerHTML ='';
+         mediator.table.rows[yAny].cells[xAny].innerHTML ='';
            yAny--;
-           obj.table.rows[yAny].cells[xAny].append(who);
+           mediator.table.rows[yAny].cells[xAny].append(who);
            return [xAny,yAny];
         }
         if (arrow == 'ArrowDown'){
-            obj.table.rows[yAny].cells[xAny].innerHTML ='';
+         mediator.table.rows[yAny].cells[xAny].innerHTML ='';
            yAny++;
-           obj.table.rows[yAny].cells[xAny].append(who);
+           mediator.table.rows[yAny].cells[xAny].append(who);
            return [xAny,yAny];
         }
         if (arrow == 'ArrowLeft'){
-            obj.table.rows[yAny].cells[xAny].innerHTML ='';
+         mediator.table.rows[yAny].cells[xAny].innerHTML ='';
            xAny--;
-           obj.table.rows[yAny].cells[xAny].append(who);
+           mediator.table.rows[yAny].cells[xAny].append(who);
            return [xAny,yAny];
         }
         if (arrow == 'ArrowRight'){
-            obj.table.rows[yAny].cells[xAny].innerHTML ='';
+         mediator.table.rows[yAny].cells[xAny].innerHTML ='';
            xAny++;
-           obj.table.rows[yAny].cells[xAny].append(who);
+           mediator.table.rows[yAny].cells[xAny].append(who);
            return [xAny,yAny];
         }
      }
+     function random(min, max) {
+      let rand = Math.round(min - 0.5 + Math.random() * (max - min + 1));
+      if (rand%2 == 0) { return rand
+      }else return random(min, max);
+  }
+ 
+  function randomInteger(min, max) {
+     let rand = min - 0.5 + Math.random() * (max - min + 1);
+     return Math.round(rand);
+  }
